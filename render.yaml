@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ai-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python assistant/main.py  # Adjusted to account for 'assistant' folder
+    envVars:
+      - key: FLASK_APP
+        value: assistant.main  # If you are using FLASK_APP to set the application
