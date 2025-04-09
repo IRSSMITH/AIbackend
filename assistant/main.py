@@ -1,18 +1,24 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from transformers import pipeline
 
 app = Flask(__name__)
+CORS(app)
 
-# Enable CORS ONLY for your frontend domain
-CORS(app, resources={r"/chat": {"origins": "https://notai.onrender.com"}})
-
-# Initialize Hugging Face model pipeline for text generation
-generator = pipeline("text-generation", model="gpt2")
-
+# A super simple AI logic just to get started
 def ai_response(message):
-    response = generator(message, max_length=50, num_return_sequences=1)
-    return response[0]['generated_text']
+    message = message.lower().strip()
+    if "hello" in message:
+        return "Hello there! How can I assist you today?"
+    elif "how are you" in message:
+        return "I'm just a program, but I'm feeling great!"
+    elif "what is 2 + 2" in message:
+        return "That's easy! 2 + 2 is 4."
+    else:
+        return "Sorry, I didn't understand that."
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -22,6 +28,4 @@ def chat():
     return jsonify({"response": reply})
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=8080)
