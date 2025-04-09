@@ -1,7 +1,14 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import CORS
 from transformers import pipeline
 
 app = Flask(__name__)
+
+# Enable CORS for all domains
+CORS(app)
+
+# If you want to restrict it to your specific frontend domain:
+# CORS(app, resources={r"/chat": {"origins": "https://notai.onrender.com"}})
 
 # Initialize Hugging Face model pipeline for text generation
 generator = pipeline("text-generation", model="gpt2")
@@ -18,4 +25,6 @@ def chat():
     return jsonify({"response": reply})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    import os
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
