@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from transformers import pipeline
 
 app = Flask(__name__)
 
-# Enable CORS globally (OR for a specific route below)
-CORS(app)
+# 👇 Only allow your frontend's domain
+CORS(app, resources={r"/chat": {"origins": "https://notai.onrender.com"}})
 
 generator = pipeline("text-generation", model="gpt2")
 
@@ -14,11 +14,10 @@ def ai_response(message):
     return response[0]['generated_text']
 
 @app.route("/chat", methods=["POST", "OPTIONS"])
-@cross_origin(origin="https://notai.onrender.com")  # Allow this origin for this route
 def chat():
     if request.method == "OPTIONS":
-        # Handle preflight request
-        return jsonify({"message": "CORS preflight success"}), 200
+        # 👇 Preflight request response
+        return jsonify({"status": "ok"}), 200
 
     data = request.get_json()
     user_message = data.get("message", "")
