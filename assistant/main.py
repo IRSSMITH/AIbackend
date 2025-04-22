@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 print("🧠 Loading GPT-2 model...")
-generator = pipeline("text-generation", model="gpt2")
+generator = pipeline("text-generation", model="distilgpt2")
 set_seed(42)  # Optional: for more consistent outputs
 print("✅ Model loaded.")
 
